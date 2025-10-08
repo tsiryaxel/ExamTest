@@ -1,0 +1,79 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" *ngIf="open()">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+    <button (click)="open.set(false)" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">✕</button>
+
+    <h3 class="text-xl font-semibold mb-4">Organiser un examen</h3>
+
+    <div *ngIf="fieldErrors()['global']" class="text-red-600 mb-4">
+      <div *ngFor="let e of fieldErrors()['global']">{{ e }}</div>
+    </div>
+
+    <form (ngSubmit)="submit()" #f="ngForm" class="space-y-4">
+
+      <!-- Student -->
+      <div>
+        <label class="block mb-1 font-medium">Student</label>
+        <select name="studentId" [(ngModel)]="model.studentId" (ngModelChange)="clearFieldError('student')"
+                required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option [ngValue]="0" disabled selected>-- Sélectionner un étudiant --</option>
+          <option *ngFor="let s of students" [ngValue]="s.id">{{ s.name }}</option>
+        </select>
+        <div *ngIf="fieldErrors()['student']" class="text-red-600 text-sm mt-1">
+          <div *ngFor="let e of fieldErrors()['student']">{{ e }}</div>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div>
+        <label class="block mb-1 font-medium">Location (optional)</label>
+        <input name="location" [(ngModel)]="model.location" (ngModelChange)="clearFieldError('location')"
+               class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <div *ngIf="fieldErrors()['location']" class="text-red-600 text-sm mt-1">
+          <div *ngFor="let e of fieldErrors()['location']">{{ e }}</div>
+        </div>
+      </div>
+
+      <!-- Date et Time -->
+      <div class="flex flex-wrap gap-4">
+        <div class="flex-1 min-w-[45%]">
+          <label class="block mb-1 font-medium">Date</label>
+          <input name="date" type="date" [(ngModel)]="model.date" (ngModelChange)="clearFieldError('date')"
+                 required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <div *ngIf="fieldErrors()['date']" class="text-red-600 text-sm mt-1">
+            <div *ngFor="let e of fieldErrors()['date']">{{ e }}</div>
+          </div>
+        </div>
+        <div class="flex-1 min-w-[45%]">
+          <label class="block mb-1 font-medium">Time</label>
+          <input name="time" type="time" [(ngModel)]="model.time" (ngModelChange)="clearFieldError('time')"
+                 required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <div *ngIf="fieldErrors()['time']" class="text-red-600 text-sm mt-1">
+            <div *ngFor="let e of fieldErrors()['time']">{{ e }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status -->
+      <div>
+        <label class="block mb-1 font-medium">Status</label>
+        <select name="status" [(ngModel)]="model.status" (ngModelChange)="clearFieldError('status')"
+                required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option>À organiser</option>
+          <option>Confirmé</option>
+          <option>Annulé</option>
+          <option>En recherche de place</option>
+        </select>
+        <div *ngIf="fieldErrors()['status']" class="text-red-600 text-sm mt-1">
+          <div *ngFor="let e of fieldErrors()['status']">{{ e }}</div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-2 mt-4">
+        <button type="button" (click)="open.set(false)"
+                class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-700">Close</button>
+        <button type="submit" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white">Save</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+# ================================
+# Workflow Symfony + Angular
+# ================================
+
+# 1️⃣ Création du projet Symfony
+composer create-project symfony/skeleton myApi
+cd myApi
+
+# 2️⃣ Installation des dépendances Symfony
+composer require api
+composer require annotations
+composer require symfony/orm-pack
+composer require symfony/maker-bundle --dev
+composer require doctrine/doctrine-migrations-bundle
+composer require symfony/validator
+composer require symfony/serializer
+composer require lexik/jwt-authentication-bundle
+composer require --dev doctrine/doctrine-fixtures-bundle
+
+# 3️⃣ Gestion de la base de données
+php bin/console doctrine:database:drop --if-exists --force
+php bin/console doctrine:database:create
+php bin/console doctrine:schema:update -f
+
+# 4️⃣ Création des entités
+php bin/console make:entity Student
+php bin/console make:entity Exam
+
+# 5️⃣ Charger les fixtures
+php bin/console doctrine:fixtures:load --no-interaction
+
+# 6️⃣ Gestion du cache Symfony
+php bin/console cache:clear
+
+# 7️⃣ JWT pour l’authentification
+php bin/console lexik:jwt:generate-keypair --overwrite --no-interaction
+
+# 8️⃣ Lancer le serveur Symfony
+php -S 127.0.0.1:8000 -t public
+
+# 9️⃣ Création du projet Angular
+ng new myFront --routing=true --style=scss --skip-git=true
+cd myFront
+
+# 10️⃣ Installation des icônes FontAwesome
+npm install @fortawesome/angular-fontawesome @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons
+
+# 11️⃣ Lancer le serveur Angular
+clear
+ng serve

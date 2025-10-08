@@ -1,0 +1,11 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+
+# Route pour le login JSON (JWT via LexikJWTAuthenticationBundle)
+api_login:
+    path: /api/login
+    methods: [POST]

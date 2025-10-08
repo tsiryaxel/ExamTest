@@ -1,0 +1,61 @@
+services:
+  db:
+    image: mariadb:10.4.32
+    container_name: cel-mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - myTest    
+
+  backend:
+    build:
+      context: ./myApi
+    container_name: symfony_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"   # map le serveur interne Symfony vers le host
+    depends_on:
+      - db
+    volumes: 
+    - ./myApi:/app
+    - ./myApi/var/:/app/var
+    networks:
+      - myTest
+    environment:
+      DATABASE_URL: "mysql://root:root@db:3306/app"
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: app 
+      
+  frontend:
+    build:
+      context: ./myFront
+      dockerfile: Dockerfile   # ce Dockerfile utilise Node 22
+    container_name: angular_frontend
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./myFront:/app:cached
+      - /app/node_modules
+    networks:
+      - myTest
+    command: ["ng", "serve", "--host", "0.0.0.0", "--port", "4200", "--poll", "2000"]
+
+
+volumes:
+  db_data:
+
+
+
+networks:
+    myTest:
+        driver: bridge

@@ -1,0 +1,127 @@
+<div class="max-w-5xl mx-auto">
+
+
+  <div *ngIf="open()" class="mb-6">
+    <app-exam-form (created)="onCreated($event)"></app-exam-form>
+  </div>
+
+
+
+  <div class="bg-white p-6 rounded-lg shadow text-center">
+    <h2 class="text-lg font-semibold mb-4">Statistiques des examens</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <div *ngFor="let s of statusEntries()" class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+        <div class="flex items-center justify-between">
+          <!-- Gauche : Label + nombre -->
+          <div>
+            <div class="text-sm text-gray-500">{{ s[0] }}</div>
+            <div class="text-2xl font-bold" [ngClass]="badgeConfig(s[0]).iconColor">
+              {{ s[1] }}
+            </div>
+          </div>
+
+          <!-- Droite : Icône -->
+          <fa-icon [icon]="badgeConfig(s[0]).icon" [ngClass]="badgeConfig(s[0]).iconColor" class="text-2xl"></fa-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white p-6 rounded-lg shadow text-center mt-6">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="flex items-start justify-between mb-5">
+        <div>
+          <h1 class="text-xl font-semibold text-gray-900">Mes examens</h1>
+          <p class="text-xs text-gray-400 mt-1">{{ exams().length }} examens à venir</p>
+        </div>
+        <button (click)="open.set(!open())"
+          class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-normal px-5 py-2.5 rounded-lg transition-colors">
+          Organiser un examen
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full border-separate border-spacing-y-2">
+          <tbody>
+            <tr *ngFor="let e of exams()" class="bg-white shadow-sm hover:bg-gray-50 transition-colors">
+              <!-- Élève -->
+              <td class="py-4 pl-6 pr-4 rounded-l-lg border-y border-l border-gray-100">
+                <div class="flex items-center gap-2">
+                  <fa-icon icon="user" class="w-4 h-4 text-gray-400 flex-shrink-0"></fa-icon>
+                  <span class="text-sm text-gray-700">{{ e.studentName }}</span>
+                </div>
+              </td>
+
+              <!-- Lieu -->
+              <td class="py-4 px-4 border-y border-gray-100">
+                <div class="flex items-center gap-2">
+                  <fa-icon icon="location-pin" class="w-4 h-4 text-gray-400 flex-shrink-0"></fa-icon>
+                  <span class="text-sm text-gray-600">{{ e.location || 'En attente' }}</span>
+                </div>
+              </td>
+
+              <!-- Date -->
+              <td class="py-4 px-4 border-y border-gray-100">
+                <div class="flex items-center gap-2">
+                  <fa-icon icon="calendar-alt" class="w-4 h-4 text-gray-400 flex-shrink-0"></fa-icon>
+                  <span class="text-sm text-gray-600">{{ e.date }}</span>
+                </div>
+              </td>
+
+              <!-- Heure -->
+              <td class="py-4 px-4 border-y border-gray-100">
+                <div class="flex items-center gap-2">
+                  <fa-icon icon="clock" class="w-4 h-4 text-gray-400 flex-shrink-0"></fa-icon>
+                  <span class="text-sm text-gray-600">{{ e.time }}</span>
+                </div>
+              </td>
+
+              <!-- Statut -->
+              <td class="py-4 px-4 border-y border-gray-100">
+                <div class="flex items-center gap-2" (click)="openStatusModal(e)">
+                  <span class="badge rounded-full px-4 " [ngClass]="badgeConfig(e.status).bg">
+                    <fa-icon [icon]="badgeConfig(e.status).icon"
+                      [ngClass]="badgeConfig(e.status).iconColor + ' mr-1'"></fa-icon>
+                    {{ e.status }}
+                  </span>
+                </div>
+              </td>
+
+              <!-- Action -->
+              <td class="py-4 pl-4 pr-6 rounded-r-lg border-y border-r border-gray-100">
+                <div class="flex items-center gap-2" (click)="deleteExame(e.id)">
+                  <fa-icon icon="trash" class="w-4 h-4 text-gray-400 flex-shrink-0"></fa-icon>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Modal Tailwind -->
+  <div *ngIf="modalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg w-80">
+      <div class="flex justify-between items-center px-4 py-2 border-b">
+        <h3 class="text-lg font-semibold">Changer le statut</h3>
+        <button class="text-gray-500 hover:text-gray-700" (click)="closeModal()">✕</button>
+      </div>
+      <div class="p-4">
+        <ul>
+          <li *ngFor="let status of statusOptions" class="cursor-pointer px-3 py-2 rounded mb-2 text-center font-medium"
+            [ngClass]="badgeConfig(status).bg" (click)="changeStatus(selectedExam.id, status)">
+            {{ status }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+</div>
